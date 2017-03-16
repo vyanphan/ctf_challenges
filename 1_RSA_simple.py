@@ -1,0 +1,34 @@
+# RSA when you know d
+
+def egcd(a,b):
+    if a==0:
+        return (b, 0, 1)
+    else:
+        g, y, x = egcd(b%a, a)
+    return (g, x - (b//a) * y, y)
+
+def modinv(a, m):
+    g, x, y = egcd(a,m)
+    if g!=1:
+        raise Exception('no mod inverse')
+    else:
+        return x%m
+
+#our two prime factors
+p = 38764263794321565520124161763731853997402733796533063852811045339499376416634417
+q = 38440596261498199682787433041207003141373961043919309363465884625956772105639727
+
+m = (p-1) * (q-1)
+n = p * q
+
+#public key
+e = 65537
+#private key
+d = modinv(e,m)
+
+# C = M^e mod n; M = C^d mod n
+C = 461440327227589750056460699337968082129610620656821971901673528999770458008139273749890664173365790257303656148077370453721055680455880625271560188101495761266
+M = pow(C, d, n) #outputs 0x656173796374667b7768336e5f7930755f683476655f7026715f5253415f697a5f657a5f34386635376136327d
+M = hex(M)[2:-1].decode('hex')
+
+print(M)
